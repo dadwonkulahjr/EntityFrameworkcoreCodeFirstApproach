@@ -51,9 +51,9 @@ namespace EntityFrameworkcoreCodeFirstApproach.Controllers
         {
             if (ModelState.IsValid)
             {
-                var identityUser = new ApplicationUser() 
+                var identityUser = new ApplicationUser()
                 {
-                    UserName = model.Email, 
+                    UserName = model.Email,
                     Email = model.Email,
                     City = model.City
                 };
@@ -61,6 +61,10 @@ namespace EntityFrameworkcoreCodeFirstApproach.Controllers
 
                 if (result.Succeeded)
                 {
+                    if (_signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        return RedirectToAction("ListUsers", "Administration");
+                    }
                     await _signInManager.SignInAsync(identityUser, isPersistent: false);
                     return RedirectToAction("index", "home");
                 }
@@ -108,7 +112,7 @@ namespace EntityFrameworkcoreCodeFirstApproach.Controllers
             }
             return View(model);
         }
-      
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Logout()
