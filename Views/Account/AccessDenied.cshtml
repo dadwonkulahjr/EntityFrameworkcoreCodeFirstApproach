@@ -1,0 +1,17 @@
+﻿@{
+    ViewBag.Title = "Access Denied";
+}
+
+<div class="text-center">
+    <h1 class="text-danger">
+        Access Denied.
+    </h1>
+    <h5 class="text-danger">
+        You do not have permission to view this resource.
+    </h5>
+    <img src="~/images/no-access-denied.jpeg" style="height:300px;width:300px;" />
+
+</div>
+<a asp-action="index" asp-controller="home" class="btn btn-block btn-outline-success">
+    Click the link to view list of employees
+</a>

@@ -1,0 +1,79 @@
+﻿@model EmployeeEditViewModel
+
+@{
+    ViewBag.Title = "Edit Existing Employee";
+    string phonePath = "~/images/" + (Model.ExistingPhothPath ?? "img_avatar1.png");
+}
+
+
+    <form asp-action="edit" asp-controller="home" method="post" class="mt-2" enctype="multipart/form-data">
+        <input hidden="hidden" asp-for="Id" />
+        <input hidden="hidden" asp-for="ExistingPhothPath" />
+        <div class="form-group row">
+            <label asp-for="Fullname" class="col-form-label col-md-2"></label>
+            <div class="col-sm-10">
+                <input asp-for="Fullname" placeholder="Fullname..." class="form-control" />
+                <span class="text-danger" asp-validation-for="Fullname"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label asp-for="Email" class="col-form-label col-md-2"></label>
+            <div class="col-sm-10">
+                <input asp-for="Email" placeholder="Email..." class="form-control" />
+                <span class="text-danger" asp-validation-for="Email"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label asp-for="Salary" class="col-form-label col-md-2"></label>
+            <div class="col-sm-10">
+                <input asp-for="Salary" placeholder="Salary..." class="form-control" />
+                <span class="text-danger" asp-validation-for="Salary"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label asp-for="Department" class="col-form-label col-md-2"></label>
+            <div class="col-sm-10">
+                <select asp-for="Department" asp-items="Html.GetEnumSelectList<Department>()" class="form-control">
+                    <option value="">Please select your department</option>
+                </select>
+                <span class="text-danger" asp-validation-for="Department"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label asp-for="Photos" class="col-form-label col-md-2"></label>
+            <div class="col-sm-10">
+                <div class="custom-file">
+                    <input asp-for="Photos" class="form-control custom-file-input" multiple />
+                    <label class="custom-file-label">Click here to change photo...</label>
+                </div>
+            </div>
+
+        </div>
+        <div class="row justify-content-center"><img src="@phonePath" class="imageThumnails rounded-circle" asp-append-version="true" /></div>
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary">Update</button>
+                <a asp-action="index" asp-controller="home" class="btn btn-primary">Cancel</a>
+            </div>
+        </div>
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        @section Scripts{
+            <script>
+                $(document).ready(function () {
+                    $('.custom-file-input').on("change", function () {
+                        var fileLabel = $(this).next('.custom-file-label');
+                        var files = $(this)[0].files;
+                        if (files.length > 1) {
+                            fileLabel.html(files.length + ' files selected');
+                        }
+                        else if (files.length == 1) {
+                            fileLabel.html(files[0].name);
+                        }
+                    });
+                });
+            </script>
+
+        }
+
+    </form>
