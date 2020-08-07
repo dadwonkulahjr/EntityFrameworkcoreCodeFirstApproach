@@ -25,7 +25,16 @@
             <form asp-action="DeleteUser" method="post" asp-controller="Administration" asp-route-Id="@user.Id">
                 <div class="card-footer text-white">
                     <a class="btn btn-primary" asp-action="EditUser" asp-controller="Administration" asp-route-Id="@user.Id">Edit</a>
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete user : @user.UserName')">Delete</button>
+                    <span style="display:none;" id="confirmDeleteSpan_@user.Id">
+                        <span class="text-primary">
+                            Are you sure you want to delete?
+                        </span>
+                        <button type="submit" class="btn btn-danger">Yes</button>
+                        <a href="#" class="btn btn-primary" onclick="confirmDelete('@user.Id', false)">No</a>
+                    </span>
+                    <span id="deleteSpan_@user.Id">
+                        <a href="#" class="btn btn-danger" onclick="confirmDelete('@user.Id', true)">Delete</a>
+                    </span>
                 </div>
             </form>
         </div>
@@ -46,4 +55,9 @@ else
             </a>
         </div>
     </div>
+}
+
+@section Scripts{ 
+<script src="~/js/CustomScript.js">confirmDelete</script>
+
 }
