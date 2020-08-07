@@ -7,6 +7,8 @@ using EntityFrameworkcoreCodeFirstApproach.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace EntityFrameworkcoreCodeFirstApproach.Controllers
 {
@@ -15,12 +17,14 @@ namespace EntityFrameworkcoreCodeFirstApproach.Controllers
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<AdministrationController> _logger;
 
         public AdministrationController(RoleManager<IdentityRole> roleManager,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager, ILogger<AdministrationController> logger)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            this._logger = logger;
         }
 
         [HttpGet]
@@ -277,7 +281,7 @@ namespace EntityFrameworkcoreCodeFirstApproach.Controllers
             }
 
         }
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> DeleteRole(string id)
         {
             var role = await _roleManager.FindByIdAsync(id);
@@ -288,21 +292,69 @@ namespace EntityFrameworkcoreCodeFirstApproach.Controllers
             }
             else
             {
-                var result = await _roleManager.DeleteAsync(role);
-                if (result.Succeeded)
+                try
                 {
-                    return RedirectToAction("ListRoles");
-                }
 
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    var result = await _roleManager.DeleteAsync(role);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("ListRoles");
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View("ListRoles");
+
                 }
-                return View("ListRoles");
+                catch (DbUpdateException ex)
+                {
+                    _logger.LogError($"Error in deleting role: {ex.Message}");
+                    ViewBag.ErrorTitle = $"{role.Name} role is in use";
+                    ViewBag.ErrorMessage = $"{role.Name} role cannot be deleted because there are users in this role." +
+                        $"If you want to delete this role, please remove the users and than try to delete.";
+                    return View("Error");
+                }
 
             }
 
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ManageUserRoles(string userId)
+        {
+            ViewBag.userId = userId;
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"Role with Id = {userId} cannot be found";
+                return View("NotFound");
+            }
+
+            var model = new List<UserRolesViewModel>();
+            foreach (var role in _roleManager.Roles)
+            {
+                UserRolesViewModel userRolesViewModel = new UserRolesViewModel()
+                {
+                    RoleId = role.Id,
+                    RoleName = role.Name
+                };
+                if (await _userManager.IsInRoleAsync(user, role.Name))
+                {
+                    userRolesViewModel.IsSelected = true;
+                }
+                else
+                {
+                    userRolesViewModel.IsSelected = false;
+                }
+                model.Add(userRolesViewModel);
+
+                
+            }
+
+            return View(model);
+        }
     }
 }
