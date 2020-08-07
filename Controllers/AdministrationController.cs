@@ -10,8 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EntityFrameworkcoreCodeFirstApproach.Controllers
 {
-    [Authorize(Roles = "Admin, Information Technology")]
-    [Authorize(Roles = "Information Technology")]
+    [Authorize(Roles = "Admin")]
     public class AdministrationController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
