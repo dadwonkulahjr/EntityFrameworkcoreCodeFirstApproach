@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EntityFrameworkcoreCodeFirstApproach.Models;
+using EntityFrameworkcoreCodeFirstApproach.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Builder.Internal;
@@ -41,11 +42,31 @@ namespace EntityFrameworkcoreCodeFirstApproach
              
                 options.Password.RequiredLength = 10;
                 options.Password.RequiredUniqueChars = 3;
+                options.User.AllowedUserNameCharacters = options.User.AllowedUserNameCharacters;
 
             }).AddEntityFrameworkStores<SQLDbContext>();
 
-            
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = new PathString("/Administration/AccessDenied");
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("DeleteRolePolicy", policy => policy.RequireClaim("Delete Role"));
+
+                options.AddPolicy("EditRolePolicy", policy =>
+                {
+                    policy.AddRequirements(new ManageAdminRolesAndCliamsRequirements());
+                });
+                            
+                options.AddPolicy("AdminRolePolicy", policy => policy.RequireRole("Admin"));
+              
+
+            });
             services.AddScoped<IEmployeeRepositoryPattern, SQLImplementation>();
+            services.AddSingleton<IAuthorizationHandler, CanEditOnlyAdminRolesAndClaimsHandler>();
+            services.AddSingleton<IAuthorizationHandler, SuperAdminHandler>();
             services.AddDbContextPool<SQLDbContext>(options =>
             {
                 options.UseSqlServer(_configuration.GetConnectionString("DbConnections"));

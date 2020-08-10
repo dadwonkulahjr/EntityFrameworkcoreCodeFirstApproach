@@ -16,7 +16,7 @@ namespace EntityFrameworkcoreCodeFirstApproach.ViewModels
         }
         public string Id { get; set; }
         [Required]
-        [MaxLength(50, ErrorMessage ="Cannt exceed 50 characters.")]
+        [MaxLength(50, ErrorMessage = "Cannt exceed 50 characters.")]
         public string Username { get; set; }
         [Required]
         [EmailAddress]

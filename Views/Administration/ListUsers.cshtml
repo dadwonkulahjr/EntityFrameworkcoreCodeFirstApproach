@@ -4,6 +4,10 @@
     ViewBag.Title = "All Users";
 }
 
+@using Microsoft.AspNetCore.Authorization
+
+@inject IAuthorizationService _authorizationService;
+
 @if (Model.Any())
 {
     <a class="btn btn-primary mt-3 mb-2 text-white" asp-controller="Account" asp-action="Register">
@@ -24,7 +28,10 @@
             </div>
             <form asp-action="DeleteUser" method="post" asp-controller="Administration" asp-route-Id="@user.Id">
                 <div class="card-footer text-white">
-                    <a class="btn btn-primary" asp-action="EditUser" asp-controller="Administration" asp-route-Id="@user.Id">Edit</a>
+                    @*@if ((await _authorizationService.AuthorizeAsync(User, "EditRolePolicy")).Succeeded)*@
+                    @*{*@
+                        <a class="btn btn-primary" asp-action="EditUser" asp-controller="Administration" asp-route-Id="@user.Id">Edit</a>
+                    @*}*@
                     <span style="display:none;" id="confirmDeleteSpan_@user.Id">
                         <span class="text-primary">
                             Are you sure you want to delete?
@@ -57,7 +64,7 @@ else
     </div>
 }
 
-@section Scripts{ 
-<script src="~/js/CustomScript.js">confirmDelete</script>
+@section Scripts{
+    <script src="~/js/CustomScript.js">confirmDelete</script>
 
 }

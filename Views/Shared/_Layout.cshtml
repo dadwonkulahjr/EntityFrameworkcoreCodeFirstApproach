@@ -49,8 +49,8 @@
                     <li class="nav-item">
                         <a asp-action="create" asp-controller="home" class="nav-link">Create</a>
                     </li>
-                    @if (_signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
-                    {
+                    @*@if (_signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {*@
                         <li class="nav-item dropdown">
                             <a aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown">
                             Manage Roles
@@ -61,11 +61,11 @@
                             </div>
                         </li>
                        
-                    }
+                    @*}
                     else
                     {
 
-                    }
+                    }*@
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     @if (_signInManager.IsSignedIn(User))

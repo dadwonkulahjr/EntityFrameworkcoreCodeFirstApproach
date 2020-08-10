@@ -120,10 +120,6 @@ namespace EntityFrameworkcoreCodeFirstApproach.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("index", "home");
         }
-        [HttpGet]
-        public IActionResult AccessDenied()
-        {
-            return View();
-        }
+      
     }
 }
