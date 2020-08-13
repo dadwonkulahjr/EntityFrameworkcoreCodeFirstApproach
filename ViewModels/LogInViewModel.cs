@@ -20,6 +20,6 @@ namespace EntityFrameworkcoreCodeFirstApproach.ViewModels
 
         public string ReturnUrl { get; set; }
 
-        public IList<AuthenticationScheme> MyProperty { get; set; }
+        public IList<AuthenticationScheme> ExternalLogins { get; set; }
     }
 }

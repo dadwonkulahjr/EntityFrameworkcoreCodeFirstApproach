@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EntityFrameworkcoreCodeFirstApproach.Models;
 using EntityFrameworkcoreCodeFirstApproach.Security;
+using EntityFrameworkcoreCodeFirstApproach.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Builder.Internal;
@@ -72,11 +73,12 @@ namespace EntityFrameworkcoreCodeFirstApproach
                 options.UseSqlServer(_configuration.GetConnectionString("DbConnections"));
             });
 
-            services.AddAuthentication().AddGoogle(options =>
+            services.AddAuthentication().AddGoogle(configureOptions:options =>
             {
                 options.ClientId = "810438046397-61f7tcisqmg2noah92abpubman7ov58f.apps.googleusercontent.com";
                 options.ClientSecret = "A6VNHH1OwJWygQYq90l46Iw3";
             });
+         
 
         }
 
